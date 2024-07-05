@@ -1,5 +1,7 @@
 import { useState } from "react";
-import "../src/globals.css";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "../src/globals.css"
 
 export default function App() {
 
@@ -33,34 +35,49 @@ export default function App() {
     const [listaPedidos, setListaPedidos] = useState([]);
 
     const adicionarPedido = (item) => {
+        toast("Produto Adicionado!");
         setListaPedidos([...listaPedidos, item]);
     }
 
     const removerPedido = (id) => {
-        let listaAux = listaPedidos.filter((produto)=> produto.id !== id);
+        let removeu = false;
+        let listaAux = listaPedidos.filter((produto) => {
+            if(removeu == false){
+                if(produto.id !== id){
+                    return produto
+                }else{
+                    removeu = true;
+                    return null
+                }
+            }else{
+                return produto
+            }
+        }); 
         setListaPedidos(listaAux);
     }
-
+    
 
     return (
         <div className="bloco-principal">
             <div className="bloco-produtos">
-                {
-                    listaProdutos.map((produto) =>
-                        <div key={produto.id}>
-                            <img src={produto.imagem} alt={produto.item} />
-                            <p>{produto.item}</p>
-                            <p>{produto.preco}</p>
-                            <button onClick={() => adicionarPedido(produto)}>QUERO</button>
-                        </div>
-                    )
-                }
+            {
+                listaProdutos.map((produto)=>
+                    <div key={produto.id}>
+                        <img src={produto.imagem} alt={produto.item} />
+                        <p>{produto.item}</p>
+                        <p>{produto.preco}</p>
+
+                        <button onClick={()=> adicionarPedido(produto)}>QUERO</button>
+                    </div>
+                )
+            }
+              
             </div>
             <div className="bloco-pedidos">
                 <p>Meus Pedidos</p>
-                {listaPedidos.map((produto)=> 
+                {listaPedidos.map((produto)=>
                     <table key={produto.id}>
-                        <tr>
+                         <tr>
                             <td>
                                 {produto.item}
                             </td>
@@ -70,10 +87,13 @@ export default function App() {
                             <td>
                                 <button onClick={()=> removerPedido(produto.id)}>X</button>
                             </td>
-                        </tr>
+                         </tr>
                     </table>
+                
                 )}
+                
             </div>
+            <ToastContainer/>
         </div>
     );
 }
